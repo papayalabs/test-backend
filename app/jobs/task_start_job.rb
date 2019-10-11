@@ -1,11 +1,15 @@
 class TaskStartJob < ApplicationJob
-  queue_as :urgent
+  queue_as :default
 
-  def perform(*args)
+  def perform()
     # Do something later
-    task = Task.where('start_date > ? AND end_date < ?', Time.now, Time.now)
-    if task.email.present?
-      TaskMailer.task_start.deliver_later
+    puts 'Execute job'
+    task = Task.where('start_date < ? AND end_date > ?', Time.now, Time.now).first
+    if task.present?
+      if task.email.present?
+        TaskMailer.task_start(task).deliver_later
+        puts 'Email sended'
+      end
     end
   end
 end

@@ -5,6 +5,7 @@ class TasksController < ApplicationController
   # GET /tasks
   # GET /tasks.json
   def index
+    TaskStartJob.set(wait: 10.seconds).perform_later()
     @tasks = Task.all
   end
 
